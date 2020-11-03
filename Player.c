@@ -17,19 +17,40 @@ void updateHand(player_t *player)
 
 
 /*Reset the players hand*/
-void clearHand(player_t *player)
+void clearHand(int* hand)
 {
-  free(player->cards);
-  player->cards = (int*)malloc(sizeof(int)*15);
+  free(hand);
+  hand = (int*)malloc(sizeof(int)*15);
 }
 
 
 /*simulate game that is not the same as the other one */
 void createPlayer(player_t *player)
 {
-  player->cards = malloc(sizeof(int)*15);
+  player->cards = (int*)malloc(sizeof(int)*15);
+  player->splitDeck = (int*)malloc(sizeof(int)*15);
   player->cash = 1000;
   player->cardTotal = 0;
   player->aceCount = 0;
   player->bust = false;
 }
+
+void clearPlayer(player_t *player)
+{
+  free(player->cards);
+  free(player->splitDeck);
+}
+
+/*Player2 betting strategy table*/
+Decision player2Decide(int* playerDeck, int dealerCount)
+{
+
+}
+
+
+
+
+
+
+
+//

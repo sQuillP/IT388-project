@@ -8,8 +8,8 @@
 
 typedef struct PlayerStatistics
 {
-  int score[2];
-  //more data about player
+  /*Player data*/
+
 } PStats;
 
 
@@ -18,14 +18,15 @@ typedef struct Player
 {
 
   int* cards;
-  int* secondDeck;
+  int* splitDeck;
 
   int cash;
-  int hand;
+  int cardTotal;
+  int aceCount;
   int numCards;
 
   PStats STATS;
-  bool fold;
+  bool bust;
 
 } player_t;
 
@@ -45,14 +46,13 @@ typedef enum PlayerDecision
 void updateHand(player_t *p);
 void clearHand(player_t *p);
 void createPlayer(player_t *player);
-
+int pair(player_t *player);
 
 /*Functions for Player 1*/
 
 
-
 /*Functions for Player 2*/
-Decision player2Bid(player_t *player, int dealerCount);
+Decision player2Decide(player_t *player, int dealerCount);
 
 
 
