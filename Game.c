@@ -2,6 +2,18 @@
 
 
 
+/*
+-potential program flaws/inconsistencies:
+ how the P1 code is implemented with keeping track of recursion
+ with how the player wants to split their cards. (using the track_t struct
+ to track how many times a player can split their cards).
+
+- overall program structure, not the best but it will hopefully make the code work.
+the plan is to make it modular for parallelization.
+
+
+*/
+
 
 void createDeck(deck_t* deck)
 {
@@ -38,7 +50,7 @@ void shuffle(deck_t* deck)
 
 void DealerTurn(dealer_t* dealer, deck_t* deck)
 {
-  updateDealerHand(dealer);
+  updateHand(&(dealer->deck));
   if(dealer->deck.cardTotal < 17)
   {
     dealer->deck.hand[dealer->deck.numCards++] = dealCard(deck);
@@ -47,48 +59,60 @@ void DealerTurn(dealer_t* dealer, deck_t* deck)
 }
 
 
-/*
-* TODO: Finish P1Turn
-*/
 
-
-/*Play a session with player 1*/
-void P1Turn(deck_t* deck, dealer_t* dealer, player_t* player, int handIndex, int upCard, int turn)
+void playerTurn(game_t* game, Hand* curHand,  int playerNum)
 {
-  PlayerDecision d = player1Decide(player,0,dealer->deck.hand[0]);
-  Hand* playerHand = &(player->hands[handIndex]);
-  int* numCards = &(playerHand->numCards);
+  player_t* player = &(game->players[playerNum]);
+  track_t* tracker = &(game->tracker);
+  dealer_t* dealer = &(game->dealer);
+  int cardValue;
+  Hand* nextHand;
+  PlayerDecision d = player1Decide(player, curHand, dealer->deck.hand[0]);
   if(d == HIT)
   {
-    playerHand->hand[playerHand->numCards++] = dealCard(deck);
-    updatePlayerHand(player, handIndex);
-    if(playerHand->cardTotal>21)
-      playerHand->bust = true;
-    else if(playerHand->cardTotal==21)
-      return;
-    else
-      P1Turn(deck,dealer,player,handIndex,upCard,turn+1);
+    cardValue = dealCard(&(game->deck));
+    printf("HIT Player received card: %d\n",cardValue);
+    curHand->hand[curHand->numCards++] = cardValue;
+    updateHand(curHand);
+    playerTurn(game,curHand,playerNum);
   }
   else if(d == STAND)
+  {
+    printf("STAND\n");
     return;
+  }
   else if(d == DOUBLEDOWN)
   {
-    playerHand->hand[playerHand->numCards++] = dealCard(deck);
-    updatePlayerHand(player,handIndex);
+    //remove double the cash for the player
+    cardValue = dealCard(&(game->deck));
+    curHand->hand[curHand->numCards++] = cardValue;
+    updateHand(curHand);
+    printf("DOUBLEDOWN Player received card: %d\n",cardValue);
   }
   else if(d == SPLIT)
   {
-    if(turn<5)
+    updateTracker(tracker);
+    if(tracker->splitNum<=3)
     {
-      player->hands[handIndex+1].hand[0] = dealCard(deck);
-      player->hands[handIndex+1].hand[1] = dealCard(deck);
-      player->hands[handIndex+1].numCards = 2;
-      updatePlayerHand(player,handIndex+1);
-      P1Turn(deck, dealer, player, handIndex+1, upCard, turn+1);
+      printf("SPLIT\n");
+      nextHand = &(game->players[playerNum].hands[tracker->handIndex]);
+      nextHand->hand[0] = curHand->hand[1];
+      nextHand->hand[1] = dealCard(&(game->deck));
+      curHand->hand[1] = dealCard(&(game->deck));
+      curHand->numCards = 2;
+      nextHand->numCards = 2;
+      updateHand(curHand);
+      updateHand(nextHand);
+      playerTurn(game, nextHand, playerNum);
+      playerTurn(game, curHand, playerNum);
+    }
+    else
+    {
+      player->canSplit = false;
+      playerTurn(game,curHand, playerNum);
     }
   }
 }
-
 
 
 

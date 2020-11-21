@@ -3,23 +3,23 @@
 
 
 
-void updateDealerHand(dealer_t *dealer)
-{
-  int sum = 0, aceCount = 0;
-  Hand* deck = &(dealer->deck);
-  for(int i = 0; i<deck->numCards; i++)
-  {
-    if(deck->hand[i]!=1)
-      sum += deck->hand[i];
-    else
-      aceCount++;
-  }
-  deck->aceCount = aceCount;
-  if(deck->aceCount>0&&(sum+11+deck->aceCount)-1<=21)
-    deck->cardTotal = (sum+11+deck->aceCount)-1;
-  else
-    deck->cardTotal = sum + deck->aceCount;
-}
+// void updateDealerHand(Hand* deck)
+// {
+//   int sum = 0, aceCount = 0;
+//   // Hand* deck = &(dealer->deck);
+//   for(int i = 0; i<deck->numCards; i++)
+//   {
+//     if(deck->hand[i]!=1)
+//       sum += deck->hand[i];
+//     else
+//       aceCount++;
+//   }
+//   deck->aceCount = aceCount;
+//   if(deck->aceCount>0&&(sum+11+deck->aceCount)-1<=21)
+//     deck->cardTotal = (sum+11+deck->aceCount)-1;
+//   else
+//     deck->cardTotal = sum + deck->aceCount;
+// }
 
 
 
@@ -49,3 +49,10 @@ void printDealerHand(dealer_t* dealer)
     printf("%d ",dealer->deck.hand[i]);
   printf("\n");
 }
+
+
+
+
+
+
+//

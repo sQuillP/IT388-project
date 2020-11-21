@@ -18,12 +18,18 @@ typedef enum PlayerDecision
 } PlayerDecision;
 
 
-
 typedef struct PlayerStatistics
 {
   /*Player data*/
 
 } stats_t;
+
+
+typedef struct PlayerTrack
+{
+  int handIndex;
+  int splitNum;
+} track_t;
 
 
 typedef struct PlayerHand
@@ -40,19 +46,24 @@ typedef struct PlayerHand
 typedef struct Player
 {
   int cash;
-  Hand hands[4];
+  Hand hands[3];
   stats_t STATS;
+  bool canSplit;
 } player_t;
 
 
+
+void updateTracker(track_t* tracker);
+void setTracker(track_t* tracker);
+
 /*Generic methods for Player structure*/
-void updatePlayerHand(player_t *p, int inxex);
+void updateHand(Hand* deck);
 void clearHand(int* hand);
 void createPlayer(player_t *player);
 
 
 /*Functions for Player 1*/
-PlayerDecision player1Decide(player_t* player, int handIndex, int upCard);
+PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard);
 PlayerDecision P1HardHand(int playerTotal, int upCard);
 PlayerDecision P1SoftHand(int pCard, int upCard);
 PlayerDecision P1Doubles(int pCard, int upCard);

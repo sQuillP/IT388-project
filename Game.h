@@ -11,6 +11,15 @@ typedef struct Deck
 } deck_t;
 
 
+typedef struct GameResources
+{
+  deck_t deck;
+  dealer_t dealer;
+  player_t players[3];
+  track_t tracker;
+} game_t;
+
+
 
 void createDeck(deck_t* deck);
 void shuffle(deck_t* deck);
@@ -21,11 +30,8 @@ int dealCard(deck_t* deck);
 
 //have a starting function that will begin the game
 
+void printPlayerHand(player_t* player);
 
-
-void P1Turn(deck_t* deck, dealer_t* dealer, player_t* player, int handNum, int upCard, int turn);
-void P2Turn(player_t* player, int handNum, int upCard);
-void P3Turn(player_t* player, int handNum, int upCard);
-
+void playerTurn(game_t* game, Hand* curHand, int playerNum);
 void DealerTurn(dealer_t* dealer, deck_t* deck);
 #endif

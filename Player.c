@@ -6,17 +6,18 @@
 
 
 
-void updatePlayerHand(player_t *player, int deckNumber)
+void updateHand(Hand* deck)
 {
-  int sum = 0;
-  Hand* deck = &(player->hands[deckNumber]);
+  int sum = 0, aceCount = 0;
+  // Hand* deck = &(player->hands[deckNumber]);
   for(int i = 0; i<deck->numCards; i++)
   {
     if(deck->hand[i]!=1)
       sum += deck->hand[i];
     else
-      deck->aceCount++;
+      aceCount++;
   }
+  deck->aceCount = aceCount;
   if(deck->aceCount>0&&(sum+11+deck->aceCount)-1<=21)
     deck->cardTotal = (sum+11+deck->aceCount)-1;
   else
@@ -31,11 +32,21 @@ void clearHand(int* hand)
 
 }
 
+void updateTracker(track_t* tracker)
+{
+  tracker->handIndex++;
+  tracker->splitNum++;
+}
 
+void setTracker(track_t* tracker)
+{
+  tracker->handIndex = 0;
+  tracker->splitNum = 0;
+}
 
 void createPlayer(player_t *player)
 {
-  for(int i = 0; i<4; i++)
+  for(int i = 0; i<3; i++)
   {
     player->hands[i].hand = (int*) malloc(sizeof(int)*15);
     player->hands[i].bust = false;
@@ -43,6 +54,7 @@ void createPlayer(player_t *player)
     player->hands[i].numCards = 0;
     player->hands[i].aceCount = 0;
   }
+  player->canSplit = true;
   player->cash = 1000;
 }
 
@@ -50,7 +62,7 @@ void createPlayer(player_t *player)
 /*Clears the hand of the player*/
 void clearPlayer(player_t *player)
 {
-  for(int i = 0; i<4; i++)
+  for(int i = 0; i<3; i++)
     free(player->hands[i].hand);
 
 }
@@ -69,7 +81,20 @@ int getAce(int* deck)
 //player looks at cards and updates hand
 //then dealer asks player to hit, stand, double, or split.
 
-
+void printPlayerHand(player_t* player)
+{
+  int n;
+  for(int i = 0; i<3; i++)
+  {
+    n = player->hands[i].numCards;
+    printf("DECK %d: ",i);
+    for(int j = 0; j<n; j++)
+    {
+      printf("%d ",player->hands[i].hand[j]);
+    }
+    printf("\tTotal: %d \n",player->hands[i].cardTotal);
+  }
+}
 
 
 
@@ -80,13 +105,13 @@ int getAce(int* deck)
 
 /*Player makes a decision to hit, stand, doubledown, or split after looking
 at the dealer's up card and the cards that are currently in their hand*/
-PlayerDecision player1Decide(player_t* player, int handIndex, int upCard)
+PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard)
 {
-  Hand* pCards = &(player->hands[handIndex]);
+  // Hand* pCards = &(player->hands[handIndex]); //this could change
   int ace = getAce(pCards->hand);
   if(pCards->numCards == 2)
   {
-    if(pCards->hand[0] == pCards->hand[1])
+    if(pCards->hand[0] == pCards->hand[1]&& player->canSplit)
      return P1Doubles(pCards->hand[0],upCard);
     else if(ace != -1)
       return P1SoftHand(ace,upCard);
