@@ -6,7 +6,7 @@
 
 
 
-void updateHand(player_t *player, int deckNumber)
+void updatePlayerHand(player_t *player, int deckNumber)
 {
   int sum = 0;
   Hand* deck = &(player->hands[deckNumber]);
@@ -38,12 +38,12 @@ void createPlayer(player_t *player)
   for(int i = 0; i<4; i++)
   {
     player->hands[i].hand = (int*) malloc(sizeof(int)*15);
+    player->hands[i].bust = false;
     player->hands[i].cardTotal = 0;
     player->hands[i].numCards = 0;
     player->hands[i].aceCount = 0;
   }
   player->cash = 1000;
-  player->bust = false;
 }
 
 

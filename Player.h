@@ -23,7 +23,7 @@ typedef struct PlayerStatistics
 {
   /*Player data*/
 
-} PStats;
+} stats_t;
 
 
 typedef struct PlayerHand
@@ -32,6 +32,7 @@ typedef struct PlayerHand
   int cardTotal;
   int numCards;
   int aceCount;
+  bool bust;
 }Hand;
 
 
@@ -40,23 +41,17 @@ typedef struct Player
 {
   int cash;
   Hand hands[4];
-  bool bust;
-  PStats STATS;
+  stats_t STATS;
 } player_t;
 
 
 /*Generic methods for Player structure*/
-void updateHand(player_t *p, int inxex);
+void updatePlayerHand(player_t *p, int inxex);
 void clearHand(int* hand);
 void createPlayer(player_t *player);
 
 
 /*Functions for Player 1*/
-
-
-
-
-/*Functions for Player 2*/
 PlayerDecision player1Decide(player_t* player, int handIndex, int upCard);
 PlayerDecision P1HardHand(int playerTotal, int upCard);
 PlayerDecision P1SoftHand(int pCard, int upCard);
@@ -64,6 +59,19 @@ PlayerDecision P1Doubles(int pCard, int upCard);
 
 
 
+/*Functions for Player 2*/
+
+
+
+
+
+
 /*Function for Player 3*/
+
+
+
+
+
+
 
 #endif
