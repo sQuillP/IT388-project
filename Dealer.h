@@ -17,4 +17,5 @@ typedef struct Dealer
 void createDealer(dealer_t* dealer);
 void clearDealer(dealer_t* dealer);
 void printDealerHand(dealer_t* dealer);
+
 #endif

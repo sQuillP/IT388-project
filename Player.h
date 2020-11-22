@@ -46,7 +46,7 @@ typedef struct PlayerHand
 typedef struct Player
 {
   int cash;
-  Hand hands[3];
+  Hand hands[4];
   stats_t STATS;
   bool canSplit;
 } player_t;
@@ -71,14 +71,19 @@ PlayerDecision P1Doubles(int pCard, int upCard);
 
 
 /*Functions for Player 2*/
-
-
+PlayerDecision player2Decide(player_t* player, Hand* pCards, int upCard);
+PlayerDecision P2HardHand(int playerTotal, int upCard);
+PlayerDecision P2SoftHand(int pCard, int upCard);
+PlayerDecision P2Doubles(int pCard, int upCard);
 
 
 
 
 /*Function for Player 3*/
-
+PlayerDecision player3Decide(player_t* player, Hand* pCards, int upCard);
+PlayerDecision P3HardHand(int playerTotal, int upCard);
+PlayerDecision P3SoftHand(int pCard, int upCard);
+PlayerDecision P3Doubles(int pCard, int upCard);
 
 
 

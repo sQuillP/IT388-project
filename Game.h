@@ -22,7 +22,7 @@ typedef struct GameResources
 
 
 void createDeck(deck_t* deck);
-void shuffle(deck_t* deck);
+void shuffleN(deck_t* deck,int n);
 void clearDeck();
 
 

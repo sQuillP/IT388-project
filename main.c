@@ -6,7 +6,7 @@
 
 int main()
 {
-
+// 8 8 is a problem for player 2
   game_t game;
 
   createDeck(&(game.deck));
@@ -15,23 +15,21 @@ int main()
     createPlayer(&(game.players[i]));
   setTracker(&(game.tracker));
   game.dealer.deck.hand[0] = dealCard(&(game.deck));
-  game.players[0].hands[0].hand[0] = dealCard(&(game.deck));
-  game.players[0].hands[0].hand[1] = dealCard(&(game.deck));
-  game.players[0].hands[0].numCards = 2;
-  updateHand(&(game.players[0].hands[0]));
+  updateHand(&(game.dealer.deck));
+  game.players[1].hands[0].hand[0] = dealCard(&(game.deck));
+  game.players[1].hands[0].hand[1] = dealCard(&(game.deck));
+  game.players[1].hands[0].numCards = 2;
+  updateHand(&(game.players[1].hands[0]));
 
   printf("Before\nDealer's up card %d\n",game.dealer.deck.hand[0]);
-  printPlayerHand(&(game.players[0]));
+  printPlayerHand(&(game.players[1]));
   printf("--------\n");
 
-  playerTurn(&game,&(game.players[0].hands[0]),0);
+  playerTurn(&game,&(game.players[1].hands[0]),1);
 
 
-  printPlayerHand(&(game.players[0]));
+  printPlayerHand(&(game.players[1]));
 
-
-  // printf("Hand Count: %d\n",test.hands[0].cardTotal);
-  // printf("Value: %d \n",(int)player1Decide(&test,0,1));
 
   return 0;
 }
