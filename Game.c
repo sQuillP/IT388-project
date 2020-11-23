@@ -47,13 +47,14 @@ void shuffleN(deck_t* deck,int n)
 
 
 
-void DealerTurn(dealer_t* dealer, deck_t* deck)
+void dealerTurn(dealer_t* dealer, deck_t* deck)
 {
   updateHand(&(dealer->deck));
   if(dealer->deck.cardTotal < 17)
   {
     dealer->deck.hand[dealer->deck.numCards++] = dealCard(deck);
-    DealerTurn(dealer,deck);
+    printf("Dealer drew a %d\n",dealer->deck.hand[dealer->deck.numCards-1]);
+    dealerTurn(dealer,deck);
   }
 }
 
@@ -135,6 +136,68 @@ void clearDeck(deck_t* deck)
 
 
 int dealCard(deck_t* deck) {return deck->cards[deck->current++];}
+
+/*Potential bug in this code*/
+void dealTable(game_t* game)
+{
+  player_t* players = (game->players);
+  int i, j;
+  for(i = 0; i<3; i++)
+  {
+    for(j = 0; j<2; j++)
+      players[i].hands[0].hand[j] = dealCard(&(game->deck));
+    players[i].hands[0].numCards = 2;
+  }
+  game->dealer.deck.hand[0] = dealCard(&(game->deck));
+  game->dealer.deck.hand[1] = dealCard(&(game->deck));
+  game->dealer.deck.numCards = 2;
+}
+
+
+void initGame(game_t* game)
+{
+  createDeck(&(game->deck));
+  createDealer(&(game->dealer));
+  for(int i = 0; i<3; i++)
+    createPlayer(&game->players[i]);
+  setTracker(&(game->tracker));
+  dealTable(game);
+}
+
+
+
+void run()
+{
+  int i;
+  game_t game;
+  initGame(&game);
+  Hand* curHand;
+  for(i = 0; i<3; i++)
+  {
+    curHand = &(game.players[i].hands[0]);
+    playerTurn(&game,curHand,i);
+  }
+  dealerTurn(&(game.dealer),&(game.deck));
+  printf("-----Player results-----\n");
+  for(int i = 0; i<3; i++)
+  {
+    printf("Player %d:\n",i);
+    printPlayerHand(&(game.players[i]));
+  }
+  printf("-----\nDealer's hand: [ ");
+
+  for(int i = 0; i<game.dealer.deck.numCards; i++)
+    printf("%d ",game.dealer.deck.hand[i]);
+
+  printf("]\n");
+
+
+
+}
+
+
+
+
 
 
 

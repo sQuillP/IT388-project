@@ -28,10 +28,27 @@ void clearDeck();
 
 int dealCard(deck_t* deck);
 
-//have a starting function that will begin the game
 
 void printPlayerHand(player_t* player);
 
+
 void playerTurn(game_t* game, Hand* curHand, int playerNum);
-void DealerTurn(dealer_t* dealer, deck_t* deck);
+
+
+void dealerTurn(dealer_t* dealer, deck_t* deck);
+
+
+
+void initGame(game_t* game);
+
+
+void dealTable(game_t* game);
+
+
+/*Root function to run a game. Runs a single blackjack
+simulation with 3 players*/
+void run();
+
+
+
 #endif
