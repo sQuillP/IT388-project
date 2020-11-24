@@ -18,10 +18,20 @@ typedef enum PlayerDecision
 } PlayerDecision;
 
 
+typedef enum HandType
+{
+  SOFT,
+  HARD,
+  DOUBLE
+} HandType;
+
 typedef struct PlayerStatistics
 {
-  /*Player data*/
-
+  int softScore[2];
+  int splitScore[2];
+  int hardScore[2];
+  int push;
+  int doubleDown[2];
 } stats_t;
 
 
@@ -38,17 +48,19 @@ typedef struct PlayerHand
   int cardTotal;
   int numCards;
   int aceCount;
-  bool bust;
+  bool doubleDown;
+  HandType handType;
+
 }Hand;
 
 
 /*Player Structure template for each player type*/
 typedef struct Player
 {
-  int cash;
   Hand hands[4];
   stats_t STATS;
   bool canSplit;
+  bool didSplit;
 } player_t;
 
 

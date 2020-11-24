@@ -8,7 +8,6 @@
 typedef struct Dealer
 {
   Hand deck;
-  bool bust;
 } dealer_t;
 
 

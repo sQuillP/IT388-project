@@ -9,7 +9,6 @@
 void updateHand(Hand* deck)
 {
   int sum = 0, aceCount = 0;
-  // Hand* deck = &(player->hands[deckNumber]);
   for(int i = 0; i<deck->numCards; i++)
   {
     if(deck->hand[i]!=1)
@@ -44,18 +43,35 @@ void setTracker(track_t* tracker)
   tracker->splitNum = 0;
 }
 
+
+void createStats(stats_t* STATS)
+{
+  int i;
+  for(i = 0; i<2; i++)
+  {
+    STATS->softScore[i] = 0;
+    STATS->splitScore[i] = 0;
+    STATS->hardScore[i] = 0;
+    STATS->doubleDown[i] = 0;
+  }
+  STATS->push = 0;
+}
+
+
 void createPlayer(player_t *player)
 {
-  for(int i = 0; i<4; i++)
+  int i;
+  for( i = 0; i<4; i++)
   {
     player->hands[i].hand = (int*) malloc(sizeof(int)*15);
-    player->hands[i].bust = false;
     player->hands[i].cardTotal = 0;
     player->hands[i].numCards = 0;
     player->hands[i].aceCount = 0;
+    player->hands[i].doubleDown = false;
+    createStats(&(player->STATS));
   }
   player->canSplit = true;
-  player->cash = 1000;
+  player->didSplit = false;
 }
 
 
@@ -99,16 +115,11 @@ void printPlayerHand(player_t* player)
 
 
 
-/*TODO: Update the code for the new card structure*/
-
-
-
 
 /*Player makes a decision to hit, stand, doubledown, or split after looking
 at the dealer's up card and the cards that are currently in their hand*/
 PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard)
 {
-  // Hand* pCards = &(player->hands[handIndex]); //this could change
   int ace = getAce(pCards->hand);
   if(pCards->numCards == 2)
   {
@@ -116,10 +127,7 @@ PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard)
      return P1Doubles(pCards->hand[0],upCard);
     else if(ace != -1)
       return P1SoftHand(ace,upCard);
-    else
-      return P1HardHand(pCards->cardTotal,upCard);
   }
-  else
     return P1HardHand(pCards->cardTotal,upCard);
 }
 
@@ -134,11 +142,8 @@ PlayerDecision player2Decide(player_t* player, Hand* pCards, int upCard)
      return P2Doubles(pCards->hand[0],upCard);
     else if(ace != -1)
       return P2SoftHand(ace,upCard);
-    else
-      return P2HardHand(pCards->cardTotal,upCard);
   }
-  else
-    return P2HardHand(pCards->cardTotal,upCard);
+  return P2HardHand(pCards->cardTotal,upCard);
 }
 
 
@@ -151,11 +156,8 @@ PlayerDecision player3Decide(player_t* player, Hand* pCards, int upCard)
      return P3Doubles(pCards->hand[0],upCard);
     else if(ace != -1)
       return P3SoftHand(ace,upCard);
-    else
-      return P3HardHand(pCards->cardTotal,upCard);
   }
-  else
-    return P2HardHand(pCards->cardTotal,upCard);
+    return P3HardHand(pCards->cardTotal,upCard);
 }
 
 
