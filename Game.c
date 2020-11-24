@@ -292,6 +292,7 @@ void initGame(game_t* game)
 
 void run()
 {
+  //all processors will run this game
   int i;
   game_t game;
   initGame(&game);
@@ -302,7 +303,6 @@ void run()
     playerTurn(&game,curHand,i);
   }
   dealerTurn(&(game.dealer),&(game.deck));
-
   printf("-----Player results-----\n");
   for(int i = 0; i<3; i++)
   {
@@ -313,6 +313,7 @@ void run()
   for(int i = 0; i<game.dealer.deck.numCards; i++)
     printf("%d ",game.dealer.deck.hand[i]);
   printf("]\n");
+
   gatherStats(&game);
   printStats(&game);
 }
