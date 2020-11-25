@@ -26,7 +26,7 @@ void shuffleN(deck_t* deck,int n);
 void clearDeck();
 int dealCard(deck_t* deck);
 void gatherStats(game_t* game);
-
+void newGame(game_t* game);
 void recordSoft(player_t* player, dealer_t* dealer);
 void recordDoubles(player_t* player, dealer_t* dealer,int hand);
 void recordHard(player_t* player, dealer_t* dealer);

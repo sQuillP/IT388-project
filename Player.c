@@ -24,13 +24,6 @@ void updateHand(Hand* deck)
 }
 
 
-/*Reset the players hand*/
-void clearHand(int* hand)
-{
-
-
-}
-
 void updateTracker(track_t* tracker)
 {
   tracker->handIndex++;
@@ -68,7 +61,6 @@ void createPlayer(player_t *player)
     player->hands[i].numCards = 0;
     player->hands[i].aceCount = 0;
     player->hands[i].doubleDown = false;
-    createStats(&(player->STATS));
   }
   player->canSplit = true;
   player->didSplit = false;
@@ -126,7 +118,7 @@ PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard)
     if(pCards->hand[0] == pCards->hand[1]&& player->canSplit)
      return P1Doubles(pCards->hand[0],upCard);
     else if(ace != -1)
-      return P1SoftHand(ace,upCard);
+      return P1SoftHand(pCards->hand[ace],upCard);
   }
     return P1HardHand(pCards->cardTotal,upCard);
 }
@@ -141,7 +133,7 @@ PlayerDecision player2Decide(player_t* player, Hand* pCards, int upCard)
     if(pCards->hand[0] == pCards->hand[1]&& player->canSplit)
      return P2Doubles(pCards->hand[0],upCard);
     else if(ace != -1)
-      return P2SoftHand(ace,upCard);
+      return P2SoftHand(pCards->hand[ace],upCard);
   }
   return P2HardHand(pCards->cardTotal,upCard);
 }
@@ -152,10 +144,10 @@ PlayerDecision player3Decide(player_t* player, Hand* pCards, int upCard)
   int ace = getAce(pCards->hand);
   if(pCards->numCards == 2)
   {
-    if(pCards->hand[0] == pCards->hand[1]&& player->canSplit)
+    if(pCards->hand[0] == pCards->hand[1]&&player->canSplit)
      return P3Doubles(pCards->hand[0],upCard);
     else if(ace != -1)
-      return P3SoftHand(ace,upCard);
+      return P3SoftHand(pCards->hand[ace],upCard);
   }
     return P3HardHand(pCards->cardTotal,upCard);
 }
@@ -193,7 +185,7 @@ PlayerDecision P3HardHand(int pCard, int upCard)
 
 PlayerDecision P3SoftHand(int pCard, int upCard)
 {
-  if(pCard >=7 && pCard <= 9)
+  if(pCard >=7 && pCard <= 10)
     return STAND;
   else if(pCard == 6)
   {
@@ -212,7 +204,7 @@ PlayerDecision P3Doubles(int pCard, int upCard)
     return STAND;
   else if(pCard == 8)
   {
-    if(upCard>2)
+    if(upCard>=2)
       return SPLIT;
     else
       return HIT;
