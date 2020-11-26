@@ -30,16 +30,13 @@ void newGame(game_t* game);
 void recordSoft(player_t* player, dealer_t* dealer);
 void recordDoubles(player_t* player, dealer_t* dealer,int hand);
 void recordHard(player_t* player, dealer_t* dealer);
-
-void printStats(game_t* game);
+void printStats(int* arr);
 void printPlayerHand(player_t* player);
 void playerTurn(game_t* game, Hand* curHand, int playerNum);
 void dealerTurn(dealer_t* dealer, deck_t* deck);
 void initGame(game_t* game);
 void dealTable(game_t* game);
-/*Root function to run a game. Runs a single blackjack
-simulation with 3 players*/
-void run();
+void packData(player_t* players, int* array);
 
 
 

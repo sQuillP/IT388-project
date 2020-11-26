@@ -5,8 +5,6 @@
 #define PLAYER_H
 
 /*Header file for Player functions and data structures*/
-
-
 /*Data structure for player decisions. A blackjack player can either hit,
 stand, split, or double down given the current game circumstances.*/
 typedef enum PlayerDecision
@@ -30,8 +28,8 @@ typedef struct PlayerStatistics
   int softScore[2];
   int splitScore[2];
   int hardScore[2];
-  int push;
   int doubleDown[2];
+  int push;
 } stats_t;
 
 
@@ -70,9 +68,8 @@ void setTracker(track_t* tracker);
 
 /*Generic methods for Player structure*/
 void updateHand(Hand* deck);
-void clearHand(int* hand);
 void createPlayer(player_t *player);
-
+void createStats(stats_t* STATS);
 
 /*Functions for Player 1*/
 PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard);

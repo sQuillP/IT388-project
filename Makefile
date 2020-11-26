@@ -1,2 +1,2 @@
 compile:
-	gcc Player.c Dealer.c Game.c main.c -o test
+	mpicc Player.c Dealer.c Game.c main.c -o test

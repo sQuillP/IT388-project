@@ -142,24 +142,18 @@ void gatherStats(game_t* game)
   }
 }
 
-
-void printStats(game_t* game)
+/*Fix player statistics, format it so it prints per player*/
+void printStats(int* arr)
 {
-  int i;
-  player_t* player;
-  printf("\n");
-  for(i = 0; i<3; i++)
-  {
-    player = &(game->players[i]);
-    printf("Player %d statistics: \n",i);
-    printf("Hard: w: %d L: %d\n",player->STATS.hardScore[0],player->STATS.hardScore[1]);
-    printf("Soft: W: %d L: %d\n",player->STATS.softScore[0],player->STATS.softScore[1]);
-    printf("Split: W: %d L: %d\n",player->STATS.splitScore[0],player->STATS.splitScore[1]);
-    printf("Doubling down: W: %d L: %d\n",player->STATS.doubleDown[0],player->STATS.doubleDown[1]);
-    printf("push: W: %d\n",player->STATS.push);
-    printf("\n\n");
-  }
-}
+  // printf("Player %d statistics: \n",i);
+  printf("Hard: w: %d L: %d\n",arr[4],arr[5]);
+  printf("Soft: W: %d L: %d\n",arr[0],arr[1]);
+  printf("Split: W: %d L: %d\n",arr[2],arr[3]);
+  printf("Doubling down: W: %d L: %d\n",arr[6],arr[7]);
+  printf("push: %d\n",arr[8]);
+  printf("\n\n");
+
+ }
 
 
 
@@ -267,9 +261,6 @@ void initGame(game_t* game)
 }
 
 
-/*TODO: take care of memory and parallelize the game*/
-
-
 void newGame(game_t* game)
 {
   int i, j;
@@ -286,47 +277,22 @@ void newGame(game_t* game)
   dealTable(game);
 }
 
-void run()
+/*Take all the data and pack it into an array to send
+to the manager processor*/
+void packData(player_t* player, int* array)
 {
-  //all processors will run this game
-  int i, j;
-  game_t game;
-  time_t t;
-  srand((unsigned)time(&t));
-  initGame(&game);
-  Hand* curHand;
-  for(j = 0; j<1000; j++)
-  {
-    if(game.dealer.deck.cardTotal==21)
-    {
-      gatherStats(&game);
-      newGame(&game);
-    }
-    else
-    {
-      for(i = 0; i<3; i++)
-      {
-        curHand = &(game.players[i].hands[0]);
-        playerTurn(&game,curHand,i);
-        setTracker(&(game.tracker));
-      }
-      dealerTurn(&(game.dealer),&(game.deck));
-      gatherStats(&game);
-      newGame(&game);
-    }
-  }
-  printStats(&game);
+  int i;
+  stats_t* stats = &(player->STATS);
+    array[0] = stats->softScore[0];
+    array[1] = stats->softScore[1];
+    array[2] = stats->splitScore[0];
+    array[3] = stats->splitScore[1];
+    array[4] = stats->hardScore[0];
+    array[5] = stats->hardScore[1];
+    array[6] = stats->doubleDown[0];
+    array[7] = stats->doubleDown[1];
+    array[8] = stats->push;
 }
-
-
-
-// printf("-----Player results-----\n");
-// printf("-----\nDealer's hand: [ ");
-// for(int i = 0; i<game.dealer.deck.numCards; i++)
-//   printf("%d ",game.dealer.deck.hand[i]);
-// printf("]\n");
-// printStats(&game);
-
 
 
 
