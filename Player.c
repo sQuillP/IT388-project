@@ -65,6 +65,7 @@ void createStats(stats_t* STATS)
     STATS->doubleDown[i] = 0;
   }
   STATS->push = 0;
+  STATS->natural21 = 0;
 }
 
 

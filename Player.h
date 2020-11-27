@@ -47,6 +47,7 @@ typedef struct PlayerStatistics
   int hardScore[2];
   int doubleDown[2];
   int push;
+  int natural21;
 } stats_t;
 
 

@@ -69,6 +69,8 @@ void recordSoft(player_t* player, dealer_t* dealer)
   Hand* curHand = &(player->hands[0]);
   if(curHand->cardTotal == 21 && dealer->deck.cardTotal == 21)
     player->STATS.push++;
+  else if(curHand->cardTotal == 21 && curHand->numCards == 2)
+    player->STATS.natural21++;
   else if(curHand->cardTotal>21 ||(dealer->deck.cardTotal<=21 &&
     curHand->cardTotal <= dealer->deck.cardTotal))
     {
@@ -166,6 +168,7 @@ void printStats(int* arr)
   printf("Split: W: %d L: %d\n",arr[2],arr[3]);
   printf("Doubling down: W: %d L: %d\n",arr[6],arr[7]);
   printf("push: %d\n",arr[8]);
+  printf("Natural 21: %d\n",arr[9]);
   printf("\n\n");
 
  }
@@ -312,4 +315,5 @@ void packData(player_t* player, int* array)
     array[6] = stats->doubleDown[0];
     array[7] = stats->doubleDown[1];
     array[8] = stats->push;
+    array[9] = stats->natural21;
 }

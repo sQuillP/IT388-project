@@ -29,17 +29,23 @@ int main(int argc, char** argv)
   /*Generate a unique seed for each processor*/
   srand((unsigned)time(&t)+my_rank);
 
+  if(my_rank == 0 && argc != 2)
+  {
+    printf("\nUse: mpiexec -n <# of processors> ./test <# of simulations>\n\n");
+    exit(1);
+  }
+
   localGames = simulations/nproc;
   if(simulations%nproc!=0 && my_rank == 0)
     localGames += simulations%nproc;
 
-  /*Allocate memory for holding statistical data*/
+  /*Allocate memory for holding stats*/
   int** stats = (int**)malloc(sizeof(int*)*3);
   int** collectedStats = (int**)malloc(sizeof(int*)*3);
   for(i = 0; i<3; i++)
   {
-    collectedStats[i] = (int*)malloc(sizeof(int)*9);
-    stats[i] = (int*)malloc(sizeof(int)*9);
+    collectedStats[i] = (int*)malloc(sizeof(int)*10);
+    stats[i] = (int*)malloc(sizeof(int)*10);
   }
 
   initGame(&game);
@@ -78,14 +84,14 @@ int main(int argc, char** argv)
 
   /*Get the sum of all stats from each processor*/
   for(i = 0; i<3; i++)
-    MPI_Reduce(&stats[i][0],&collectedStats[i][0],9,MPI_INT,MPI_SUM,0,comm);
+    MPI_Reduce(&stats[i][0],&collectedStats[i][0],10,MPI_INT,MPI_SUM,0,comm);
 
   /*Manager prints the results of the simulation*/
   if(my_rank == 0)
   {
     for(i = 0; i<3; i++)
       printStats(&collectedStats[i][0]);
-    printf("# of simulations: %d\n Total time: %f\n",simulations,end);
+    printf("# of simulations: %d\nTotal time: %f\n",simulations,end);
   }
 
   for(i = 0 ;i<3; i++)
