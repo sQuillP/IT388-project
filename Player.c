@@ -1,11 +1,19 @@
 #include "Player.h"
 
+
+/*
+* Serial Gang Software
+* Copyright 2020
+* @ William Pattison, Kevin Gomez,
+* and Filip Sofeski
+*/
+
+
 /*Implementation file for player*/
 
 
-
-
-
+/*Updates the players hand after they are dealt a card. Players hand will always
+have the best score possible given their current hand.*/
 void updateHand(Hand* deck)
 {
   int sum = 0, aceCount = 0;
@@ -24,12 +32,19 @@ void updateHand(Hand* deck)
 }
 
 
+/*After a recursive call is used when a player splits, the tracker
+will update the count and point to the next hand index that their split
+cards will go to. This is used for making sure the player splits no more than
+three times.*/
 void updateTracker(track_t* tracker)
 {
   tracker->handIndex++;
   tracker->splitNum++;
 }
 
+
+/*Reset or initilize the tracker to zero. Method is always
+called after a player's turn is finished.*/
 void setTracker(track_t* tracker)
 {
   tracker->handIndex = 0;
@@ -37,6 +52,8 @@ void setTracker(track_t* tracker)
 }
 
 
+/*Create and set the player's statistics to be updated
+later on.*/
 void createStats(stats_t* STATS)
 {
   int i;
@@ -51,6 +68,7 @@ void createStats(stats_t* STATS)
 }
 
 
+/*Creates and allocates resources for a player*/
 void createPlayer(player_t *player)
 {
   int i;
@@ -67,15 +85,9 @@ void createPlayer(player_t *player)
 }
 
 
-/*Clears the hand of the player*/
-//might not need this method
-void clearPlayer(player_t *player)
-{
-  for(int i = 0; i<3; i++)
-    free(player->hands[i].hand);
-
-}
-
+/*Returns the index of the non-ace card if there
+is a soft hand. Returns -1 if there is no ace in
+the player's first 2 cards.*/
 int getAce(int* deck)
 {
   if(deck[0] == 1)
@@ -86,10 +98,9 @@ int getAce(int* deck)
     return -1;
 }
 
-//player is dealt two cards
-//player looks at cards and updates hand
-//then dealer asks player to hit, stand, double, or split.
 
+/*Used for debugging. Prints the contents of all the player's
+cards.*/
 void printPlayerHand(player_t* player)
 {
   int n;
@@ -106,10 +117,7 @@ void printPlayerHand(player_t* player)
 }
 
 
-
-
-/*Player makes a decision to hit, stand, doubledown, or split after looking
-at the dealer's up card and the cards that are currently in their hand*/
+/*Function for player 2's decision given dealer's up card and their current hand*/
 PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard)
 {
   int ace = getAce(pCards->hand);
@@ -124,7 +132,7 @@ PlayerDecision player1Decide(player_t* player, Hand* pCards, int upCard)
 }
 
 
-
+/*Function for player 2's decision given dealer's up card and their current hand*/
 PlayerDecision player2Decide(player_t* player, Hand* pCards, int upCard)
 {
   int ace = getAce(pCards->hand);
@@ -139,6 +147,7 @@ PlayerDecision player2Decide(player_t* player, Hand* pCards, int upCard)
 }
 
 
+/*Function for player 3's decision given dealer's up card and their current hand*/
 PlayerDecision player3Decide(player_t* player, Hand* pCards, int upCard)
 {
   int ace = getAce(pCards->hand);
@@ -153,7 +162,7 @@ PlayerDecision player3Decide(player_t* player, Hand* pCards, int upCard)
 }
 
 
-
+/*Hard hand table implementation for player 3.*/
 PlayerDecision P3HardHand(int pCard, int upCard)
 {
   if(pCard >= 17)
@@ -183,6 +192,8 @@ PlayerDecision P3HardHand(int pCard, int upCard)
     return HIT;
 }
 
+
+/*Soft hand table for player 3*/
 PlayerDecision P3SoftHand(int pCard, int upCard)
 {
   if(pCard >=7 && pCard <= 10)
@@ -198,6 +209,8 @@ PlayerDecision P3SoftHand(int pCard, int upCard)
     return HIT;
 }
 
+
+/*Decision table for player 3 if there is two of the same card*/
 PlayerDecision P3Doubles(int pCard, int upCard)
 {
   if(pCard == 10||pCard == 9)
@@ -237,7 +250,7 @@ PlayerDecision P3Doubles(int pCard, int upCard)
 }
 
 
-
+/*Hard hand table implementation for player 1.*/
 PlayerDecision P2HardHand(int pCard, int upCard)
 {
   if(pCard>=17)
@@ -282,6 +295,7 @@ PlayerDecision P2HardHand(int pCard, int upCard)
 }
 
 
+/*Soft hand table implementation for player 2.*/
 PlayerDecision P2SoftHand(int pCard, int upCard)
 {
   if(pCard >=8 && pCard <=10)
@@ -318,6 +332,9 @@ PlayerDecision P2SoftHand(int pCard, int upCard)
   }
 }
 
+
+/*Player 2 table implementation if there is two of the
+same card.*/
 PlayerDecision P2Doubles(int pCard, int upCard)
 {
   if(pCard == 10)
@@ -371,6 +388,9 @@ PlayerDecision P2Doubles(int pCard, int upCard)
 
 }
 
+
+/*Player 1 table implementation for a hard hand
+(no aces or doubles).*/
 PlayerDecision P1HardHand(int pCard, int upCard)
 {
   if(pCard >= 17)
@@ -410,10 +430,12 @@ PlayerDecision P1HardHand(int pCard, int upCard)
     else
       return HIT;
   }
-  else //less than or equal to 8
+  else
     return HIT;
 }
 
+
+/*Player 1 table for when there is a soft hand*/
 PlayerDecision P1SoftHand(int pCard, int upCard)
 {
   if(pCard >=8 && pCard <=10)
@@ -449,6 +471,9 @@ PlayerDecision P1SoftHand(int pCard, int upCard)
     return HIT;
 }
 
+
+/*Player 1 table if there is two of the same card
+when the first two cards are dealt.*/
 PlayerDecision P1Doubles(int pCard, int upCard)
 {
   if(pCard == 1 || pCard == 8)
@@ -495,14 +520,3 @@ PlayerDecision P1Doubles(int pCard, int upCard)
   else
     return HIT;
 }
-
-
-
-
-
-
-
-
-
-
-//

@@ -1,20 +1,20 @@
 #include "Game.h"
 
 
-
 /*
--potential program flaws/inconsistencies:
- how the P1 code is implemented with keeping track of recursion
- with how the player wants to split their cards. (using the track_t struct
- to track how many times a player can split their cards).
- Overall program structure is not the best but the code will at least work.
-the plan is to make it modular for parallelization.
-
-
--Redundancies in code
+* Serial Gang Software
+* Copyright 2020
+* @ William Pattison, Kevin Gomez,
+* and Filip Sofeski
 */
 
 
+/*Implementation file for game mechanics and resource management.*/
+
+
+/*Allocates memory for the deck and fills it with 312 cards
+(six decks). ShuffleN is then called to make sure that cards
+are in a random order.*/
 void createDeck(deck_t* deck)
 {
   int counter = 0, temp;
@@ -30,7 +30,9 @@ void createDeck(deck_t* deck)
 }
 
 
-
+/*Loops through the deck array and swaps the current
+index values with a random index value. For more randmness,
+you can choose how many times you would like to shuffle the cards*/
 void shuffleN(deck_t* deck,int n)
 {
   int temp, index;
@@ -47,18 +49,21 @@ void shuffleN(deck_t* deck,int n)
 }
 
 
-
+/*Simulates the dealer's turn after every player has gone.
+Dealer must stand on a total of 17 or higher.*/
 void dealerTurn(dealer_t* dealer, deck_t* deck)
 {
   updateHand(&(dealer->deck));
   if(dealer->deck.cardTotal < 17)
   {
     dealer->deck.hand[dealer->deck.numCards++] = dealCard(deck);
-    // printf("Dealer drew a %d\n",dealer->deck.hand[dealer->deck.numCards-1]);
     dealerTurn(dealer,deck);
   }
 }
 
+
+/*Determines if a player won or lost and places results in
+the soft category.*/
 void recordSoft(player_t* player, dealer_t* dealer)
 {
   Hand* curHand = &(player->hands[0]);
@@ -79,6 +84,9 @@ void recordSoft(player_t* player, dealer_t* dealer)
   }
 }
 
+
+/*Determines if a player won or lost and places results in the
+doubleDown category.*/
 void recordDoubles(player_t* player,dealer_t* dealer, int hand)
 {
   Hand* curHand = &(player->hands[hand]);
@@ -102,6 +110,9 @@ void recordDoubles(player_t* player,dealer_t* dealer, int hand)
   }
 }
 
+
+/*Determines of the player won or lost and places results
+into the hard hand category.*/
 void recordHard(player_t* player, dealer_t* dealer)
 {
   Hand* curHand = &(player->hands[0]);
@@ -123,6 +134,9 @@ void recordHard(player_t* player, dealer_t* dealer)
 }
 
 
+/*Gathers statistics for all three players. If the player decided
+to split, then it place the rest of the player's hands in the win lose
+split category.*/
 void gatherStats(game_t* game)
 {
   int i, j;
@@ -142,7 +156,8 @@ void gatherStats(game_t* game)
   }
 }
 
-/*Fix player statistics, format it so it prints per player*/
+
+/*Formats and prints the statistics to the screen from an array.*/
 void printStats(int* arr)
 {
   // printf("Player %d statistics: \n",i);
@@ -156,8 +171,9 @@ void printStats(int* arr)
  }
 
 
-
-//6 and 6
+/*Accepts a game structure with the first hand of the player when
+it is called. playerNum will specify which betting table to use.
+Recursion is used if the player wants to hit or split their cards.*/
 void playerTurn(game_t* game, Hand* curHand,  int playerNum)
 {
   player_t* player = &(game->players[playerNum]);
@@ -174,7 +190,6 @@ void playerTurn(game_t* game, Hand* curHand,  int playerNum)
   if(d == HIT)
   {
     int num = dealCard(&(game->deck));
-    // printf("Player %d hit and got a %d\n",playerNum,num);
     curHand->hand[curHand->numCards++] = num;
     updateHand(curHand);
     playerTurn(game,curHand,playerNum);
@@ -214,17 +229,16 @@ void playerTurn(game_t* game, Hand* curHand,  int playerNum)
 }
 
 
-
-void clearDeck(deck_t* deck)
-{
-  free(deck->cards);
-  deck->current = 0;
-}
-
-
+/*Queue structure for dealing a card. Current will always start at the
+first array index and increment after each time a card is dealt to
+keep track of the next card at the top of the deck.*/
 int dealCard(deck_t* deck) {return deck->cards[deck->current++];}
 
-/*Potential bug in this code*/
+
+/*Function is used in the first iteration in blackjack where
+each player and dealer get two cards. Players determine if they have
+a soft or hard hand based on their two cards. Their hand can change to
+a double after looking at the betting table.*/
 void dealTable(game_t* game)
 {
   player_t* players = (game->players);
@@ -247,6 +261,8 @@ void dealTable(game_t* game)
 }
 
 
+/*Creates the first instance of a game, allocates resources for
+blackjack*/
 void initGame(game_t* game)
 {
   createDeck(&(game->deck));
@@ -261,6 +277,9 @@ void initGame(game_t* game)
 }
 
 
+/*Frees up and reallocates memory for cards and resets player data. Statistics are
+not touched. Function is called after each game is finished so that
+a new game can be played.*/
 void newGame(game_t* game)
 {
   int i, j;
@@ -276,6 +295,7 @@ void newGame(game_t* game)
   createDealer(&(game->dealer));
   dealTable(game);
 }
+
 
 /*Take all the data and pack it into an array to send
 to the manager processor*/
@@ -293,8 +313,3 @@ void packData(player_t* player, int* array)
     array[7] = stats->doubleDown[1];
     array[8] = stats->push;
 }
-
-
-
-
-//
