@@ -50,7 +50,7 @@ void gatherStats(game_t* game);
 void recordSoft(player_t* player, dealer_t* dealer);
 void recordDoubles(player_t* player, dealer_t* dealer,int hand);
 void recordHard(player_t* player, dealer_t* dealer);
-void printStats(int* arr);
+void printStats(int* arr, int player);
 void packData(player_t* players, int* array);
 
 

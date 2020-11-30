@@ -160,17 +160,15 @@ void gatherStats(game_t* game)
 
 
 /*Formats and prints the statistics to the screen from an array.*/
-void printStats(int* arr)
+void printStats(int* arr, int playerNum)
 {
-  // printf("Player %d statistics: \n",i);
+  printf("\nPlayer %d statistics: \n",playerNum);
   printf("Hard: w: %d L: %d\n",arr[4],arr[5]);
   printf("Soft: W: %d L: %d\n",arr[0],arr[1]);
   printf("Split: W: %d L: %d\n",arr[2],arr[3]);
   printf("Doubling down: W: %d L: %d\n",arr[6],arr[7]);
   printf("push: %d\n",arr[8]);
   printf("Natural 21: %d\n",arr[9]);
-  printf("\n\n");
-
  }
 
 

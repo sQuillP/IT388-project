@@ -90,8 +90,8 @@ int main(int argc, char** argv)
   if(my_rank == 0)
   {
     for(i = 0; i<3; i++)
-      printStats(&collectedStats[i][0]);
-    printf("# of simulations: %d\nTotal time: %f\n",simulations,end);
+      printStats(&collectedStats[i][0],i+1);
+    printf("\n# of simulations: %d\nTotal time: %f\n",simulations,end);
   }
 
   for(i = 0 ;i<3; i++)
