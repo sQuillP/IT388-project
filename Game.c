@@ -315,3 +315,14 @@ void packData(player_t* player, int* array)
     array[8] = stats->push;
     array[9] = stats->natural21;
 }
+
+
+/*Clear the game memory*/
+void clearMem(game_t* game)
+{
+  free(game->deck.cards);
+  free(game->dealer.deck.hand);
+  for(int i = 0; i<3 ;i++)
+    for(int j = 0; j<4; j++)
+      free(game->players[i].hands[j].hand);
+}

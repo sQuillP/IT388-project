@@ -63,4 +63,8 @@ void dealTable(game_t* game);
 void printPlayerHand(player_t* player);
 
 
+/*Clears the game memory when the game is finished*/
+void clearMem(game_t* game);
+
+
 #endif

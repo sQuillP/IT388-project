@@ -13,6 +13,15 @@
 /*Runner program for blackjack. Uses MPI library to partition
 simulations among processors.*/
 
+/*
+* To compile, just type in "make" into terminal where the make file
+* is located.
+*
+* To run the program, do
+* mpiexec -n <# of processors> ./test <# of simulations>
+*/
+
+
 
 int main(int argc, char** argv)
 {
@@ -82,6 +91,7 @@ int main(int argc, char** argv)
   MPI_Barrier(comm);
   end = MPI_Wtime() - start;
 
+
   /*Get the sum of all stats from each processor*/
   for(i = 0; i<3; i++)
     MPI_Reduce(&stats[i][0],&collectedStats[i][0],10,MPI_INT,MPI_SUM,0,comm);
@@ -93,6 +103,9 @@ int main(int argc, char** argv)
       printStats(&collectedStats[i][0],i+1);
     printf("\n# of simulations: %d\nTotal time: %f\n",simulations,end);
   }
+
+  /*Clear the game memory from the last game*/
+  clearMem(&game);
 
   for(i = 0 ;i<3; i++)
     free(stats[i]);
